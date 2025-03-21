@@ -1,0 +1,17 @@
+{
+  "name": "som",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:Smartesting/som.git",
+  "author": "alex ginhoux <alex.ginhoux@smartesting.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "node build.js",
+    "start": "node dist/som.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.11",
+    "esbuild": "^0.25.1",
+    "typescript": "^5.8.2"
+  }
+}
