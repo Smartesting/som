@@ -1,3 +1,5 @@
+import {Mark} from "./types";
+
 let labels: HTMLDivElement[] = [];
 
 

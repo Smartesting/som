@@ -1,11 +1,11 @@
-type BoundingBox = {
+export type BoundingBox = {
     top: number;
     left: number;
     width: number;
     height: number;
 };
 
-type Mark = {
+export type Mark = {
     id: number;
     bounds: BoundingBox
     rects: BoundingBox[]
@@ -13,3 +13,5 @@ type Mark = {
     textContent: any;
     ariaLabel: any
 }
+
+export type MarkPageFn = (highlightElements: boolean) => Mark[]

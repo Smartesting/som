@@ -1,14 +1,14 @@
 {
   "name": "som",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/som.js",
+  "types": "dist/types.d.ts",
   "repository": "git@github.com:Smartesting/som.git",
   "author": "alex ginhoux <alex.ginhoux@smartesting.com>",
   "license": "MIT",
   "scripts": {
     "build": "node build.js",
     "tsc:watch": "tsc --noEmit --watch",
-    "start": "node dist/som.js",
     "serve": "http-server dist -p 8000 --cors"
   },
   "devDependencies": {
