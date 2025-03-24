@@ -7,11 +7,14 @@
   "license": "MIT",
   "scripts": {
     "build": "node build.js",
-    "start": "node dist/som.js"
+    "tsc:watch": "tsc --noEmit --watch",
+    "start": "node dist/som.js",
+    "serve": "http-server dist -p 8000 --cors"
   },
   "devDependencies": {
     "@types/node": "^22.13.11",
     "esbuild": "^0.25.1",
+    "http-server": "^14.1.1",
     "typescript": "^5.8.2"
   }
 }
