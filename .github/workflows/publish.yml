@@ -19,7 +19,7 @@ jobs:
           yarn version --new-version ${{ github.event.inputs.version }} --no-git-tag-version
           yarn install
           yarn build
-          cp package.json README.md dist/
+          cp .npmrc package.json README.md dist/
           cd dist
           npm publish --access public
         env:
