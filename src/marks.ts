@@ -11,6 +11,7 @@ function buildBoundedMarks(htmlElements: ReadonlyArray<HTMLElement>): BoundedMar
     item.setAttribute(MARK_INDEX_ATTRIBUTE, `${index}`)
     return {
       id: index,
+      htmlElement: item,
       bounds: mapDomRectToBoundingBox(item.getBoundingClientRect())
     }
   })

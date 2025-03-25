@@ -9,6 +9,7 @@ export type BoundingBox = {
 
 export type BoundedMark = {
   id: number
+  htmlElement: HTMLElement
   bounds: BoundingBox
 }
 export type Mark = BoundedMark & {
