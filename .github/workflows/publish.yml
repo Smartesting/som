@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Build and publish client
         run: |
-          yarn version --new-version ${{ github.event.inputs.version }}
+          yarn version --new-version ${{ github.event.inputs.version }} --no-git-tag-version
           yarn install
           yarn build
           cp package.json README.md dist/
