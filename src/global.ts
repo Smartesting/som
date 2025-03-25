@@ -1,9 +1,9 @@
-import {MarkPageFn} from './types'
+import { MarkPageFn } from './types'
 
 declare global {
-    interface Window {
-        markPage: MarkPageFn;
-    }
+  interface Window {
+    markPage: MarkPageFn
+  }
 }
 
-export {};
+export {}

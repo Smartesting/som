@@ -1,17 +1,29 @@
-export type BoundingBox = {
-    top: number;
-    left: number;
-    width: number;
-    height: number;
-};
+export type Color = { r: number; g: number; b: number }
 
-export type Mark = {
-    id: number;
-    bounds: BoundingBox
-    rects: BoundingBox[]
-    htmlElementType: string;
-    textContent: any;
-    ariaLabel: any
+export type BoundingBox = {
+  top: number
+  left: number
+  width: number
+  height: number
+}
+
+export type BoundedMark = {
+  id: number
+  bounds: BoundingBox
+}
+export type Mark = BoundedMark & {
+  renderConfig: {
+    textColor: 'white' | 'black'
+    backgroundColor: {
+      r: number
+      g: number
+      b: number
+    }
+    labelAbsolutePosition: {
+      top: number
+      left: number
+    }
+  }
 }
 
 export type MarkPageFn = (highlightElements: boolean) => Mark[]

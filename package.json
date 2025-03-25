@@ -1,5 +1,5 @@
 {
-  "name": "som",
+  "name": "@smartesting/som",
   "version": "1.0.0",
   "main": "dist/som.js",
   "types": "dist/types.d.ts",
@@ -9,12 +9,19 @@
   "scripts": {
     "build": "node build.js",
     "tsc:watch": "tsc --noEmit --watch",
-    "serve": "http-server dist -p 8000 --cors"
+    "serve": "http-server dist -p 8000 --cors",
+    "format": "prettier --write .",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@types/node": "^22.13.11",
     "esbuild": "^0.25.1",
+    "eslint": "^9.23.0",
+    "eslint-config-next": "^15.2.4",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.5",
     "http-server": "^14.1.1",
+    "prettier": "^3.5.3",
     "typescript": "^5.8.2"
   }
 }
