@@ -26,3 +26,6 @@ function markPage(highlightElements: boolean): Mark[] {
 }
 
 window.markPage = markPage
+
+export * from './types'
+export * from './global'
