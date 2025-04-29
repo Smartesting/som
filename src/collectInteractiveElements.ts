@@ -1,57 +1,69 @@
-export function collectInteractiveElements(): ReadonlyArray<HTMLElement> {
-  const items = Array.prototype.slice
-    .call(document.querySelectorAll('*'))
-    .map(function (element: HTMLElement) {
-      const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-      const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-      const textualContent = element.textContent?.trim().replace(/\s{2,}/g, ' ')
-      const elementType = element.tagName.toLowerCase()
-      const ariaLabel = element.getAttribute('aria-label') || ''
+export function gatherInteractiveElements() {
+  const htmlElements: HTMLElement[] = []
+  collectInteractiveElements(document.body, htmlElements, {
+    isContentEditable: document.body.isContentEditable,
+    cursor: window.getComputedStyle(document.body).cursor
+  })
+  return htmlElements
+}
 
-      const rects = [...element.getClientRects()]
-        .filter((bb) => {
-          const center_x = bb.left + bb.width / 2
-          const center_y = bb.top + bb.height / 2
-          const elAtCenter = document.elementFromPoint(center_x, center_y)
+type CollectorContext = {
+  cursor: CSSStyleDeclaration['cursor']
+  isContentEditable: boolean
+}
 
-          return elAtCenter === element || element.contains(elAtCenter)
-        })
-        .map((bb) => {
-          const rect = {
-            left: Math.max(0, bb.left),
-            top: Math.max(0, bb.top),
-            right: Math.min(vw, bb.right),
-            bottom: Math.min(vh, bb.bottom)
-          }
-          return {
-            ...rect,
-            width: rect.right - rect.left,
-            height: rect.bottom - rect.top
-          }
-        })
+const IRRELEVANT_CURSOR_VALUES = ['auto', 'default', 'none', 'not-allowed', 'inherit', 'initial']
+const RELEVANT_TAG_NAMES = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'IFRAME', 'VIDEO']
 
-      const area = rects.reduce((acc, rect) => acc + rect.width * rect.height, 0)
+function isRelevantElement(element: HTMLElement, parentContext: CollectorContext, context: CollectorContext): boolean {
+  if (RELEVANT_TAG_NAMES.includes(element.tagName.toUpperCase())) {
+    return computeArea(element) >= 20
+  }
+  if (context.isContentEditable && parentContext.isContentEditable != context.isContentEditable) {
+    return computeArea(element) >= 20
+  }
+  if (parentContext.cursor != context.cursor && !IRRELEVANT_CURSOR_VALUES.includes(context.cursor)) {
+    return computeArea(element) >= 20
+  }
+  return false
+}
 
+function collectInteractiveElements(elt: HTMLElement, collector: HTMLElement[], parentContext: CollectorContext) {
+  const context: CollectorContext = {
+    cursor: window.getComputedStyle(elt).cursor,
+    isContentEditable: elt.isContentEditable
+  }
+  if (isRelevantElement(elt, parentContext, context)) collector.push(elt)
+  for (const child of elt.children) {
+    if (!(child instanceof HTMLElement)) continue
+    collectInteractiveElements(child, collector, context)
+  }
+}
+
+function computeArea(element: HTMLElement): number {
+  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+  const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+  const rects = [...element.getClientRects()]
+    .filter((bb) => {
+      const center_x = bb.left + bb.width / 2
+      const center_y = bb.top + bb.height / 2
+      const elAtCenter = document.elementFromPoint(center_x, center_y)
+
+      return elAtCenter === element || element.contains(elAtCenter)
+    })
+    .map((bb) => {
+      const rect = {
+        left: Math.max(0, bb.left),
+        top: Math.max(0, bb.top),
+        right: Math.min(vw, bb.right),
+        bottom: Math.min(vh, bb.bottom)
+      }
       return {
-        element: element,
-        include:
-          element.tagName === 'INPUT' ||
-          element.tagName === 'TEXTAREA' ||
-          element.tagName === 'SELECT' ||
-          element.tagName === 'BUTTON' ||
-          element.tagName === 'A' ||
-          element.onclick != null ||
-          window.getComputedStyle(element).cursor == 'pointer' ||
-          element.tagName === 'IFRAME' ||
-          element.tagName === 'VIDEO',
-        area,
-        rects,
-        text: textualContent,
-        type: elementType,
-        ariaLabel: ariaLabel
+        ...rect,
+        width: rect.right - rect.left,
+        height: rect.bottom - rect.top
       }
     })
-    .filter((item) => item.include && item.area >= 20)
 
-  return items.filter((x) => !items.some((y) => x.element.contains(y.element) && !(x == y))).map((item) => item.element)
+  return rects.reduce((acc, rect) => acc + rect.width * rect.height, 0)
 }

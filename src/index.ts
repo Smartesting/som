@@ -1,5 +1,5 @@
 import { Mark } from './types'
-import { collectInteractiveElements } from './collectInteractiveElements'
+import { gatherInteractiveElements } from './collectInteractiveElements'
 import { highlightMarks } from './highlightMarks'
 import { elementsToMarks } from './marks'
 
@@ -17,7 +17,7 @@ function unmarkPage() {
 
 function markPage(highlightElements: boolean): Mark[] {
   unmarkPage()
-  const interactiveElements = collectInteractiveElements()
+  const interactiveElements = gatherInteractiveElements()
   const marks = elementsToMarks(interactiveElements)
   if (highlightElements) {
     labels.push(...highlightMarks(marks))
@@ -25,7 +25,7 @@ function markPage(highlightElements: boolean): Mark[] {
   return marks
 }
 
-window.markPage = markPage
+if (!window.markPage) window.markPage = markPage
 
 export * from './types'
 export * from './global'
