@@ -43,6 +43,105 @@ describe('gatherInteractiveElements', () => {
     const result = gatherInteractiveElements()
     expect(result).toEqual([])
   })
+
+  it('collects elements with role "option"', () => {
+    document.body.innerHTML = `
+        <div>
+          <ul id="ul-0">
+            <li id="li-0">-</li>
+            <li role="option" id="li-1">1</li>
+          </ul>
+        </div>`
+    const li = spyHtmlElementById('li-1', { width: 200, height: 20 })
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([li])
+  })
+
+  it('collects elements with role "button"', () => {
+    document.body.innerHTML = `
+        <div>
+          <div role="button" id="id" tabindex="0" onclick="alert('Clicked!')">
+            Clique ici
+          </div>
+        </div>`
+    const element = spyHtmlElementById('id', { width: 200, height: 20 })
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([element])
+  })
+
+  it('collects elements with role "link"', () => {
+    document.body.innerHTML = `
+        <div>
+          <div role="link" id="id" tabindex="0" onclick="alert('Clicked!')">
+            Clique ici
+          </div>
+        </div>`
+    const element = spyHtmlElementById('id', { width: 200, height: 20 })
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([element])
+  })
+
+  it('collects elements with role "menuitem"', () => {
+    document.body.innerHTML = `
+        <div role="menu" tabindex="0">
+          <div role="menuitem" id="id" tabindex="-1" onclick="alert('Clicked!')">
+            Clique ici
+          </div>
+        </div>`
+    const element = spyHtmlElementById('id', { width: 200, height: 20 })
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([element])
+  })
+
+  it('collects elements with role "menuitemcheckbox"', () => {
+    document.body.innerHTML = `
+        <div role="menu" tabindex="0">
+          <div role="menuitemcheckbox" id="id" tabindex="-1" onclick="alert('Clicked!')">
+            Clique ici
+          </div>
+        </div>`
+    const element = spyHtmlElementById('id', { width: 200, height: 20 })
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([element])
+  })
+
+  it('collects elements with role "menuitemradio"', () => {
+    document.body.innerHTML = `
+        <div role="menu" tabindex="0">
+          <div role="menuitemradio" id="id" tabindex="-1" onclick="alert('Clicked!')">
+            Clique ici
+          </div>
+        </div>`
+    const element = spyHtmlElementById('id', { width: 200, height: 20 })
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([element])
+  })
+
+  it('collects elements with role "radio"', () => {
+    document.body.innerHTML = `
+          <div role="radio" id="id" tabindex="-1" onclick="alert('Clicked!')">
+            Clique ici
+          </div>`
+    const element = spyHtmlElementById('id', { width: 200, height: 20 })
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([element])
+  })
+
+  it('collects elements with role "textbox"', () => {
+    document.body.innerHTML = `
+        <div role="textbox" id="id">Enter text here</div>`
+    const element = spyHtmlElementById('id', { width: 200, height: 20 })
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([element])
+  })
+
+  it('collects elements with role "searchbox"', () => {
+    document.body.innerHTML = `
+        <div role="searchbox" id="id">Enter text here</div>`
+    const element = spyHtmlElementById('id', { width: 200, height: 20 })
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([element])
+  })
 })
 
 function createRectList(size: { width: number; height: number }) {

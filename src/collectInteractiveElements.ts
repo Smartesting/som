@@ -14,9 +14,24 @@ type CollectorContext = {
 
 const IRRELEVANT_CURSOR_VALUES = ['auto', 'default', 'none', 'not-allowed', 'inherit', 'initial']
 const RELEVANT_TAG_NAMES = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'IFRAME', 'VIDEO']
+const RELEVANT_ROLES = [
+  'OPTION',
+  'BUTTON',
+  'LINK',
+  'MENUITEM',
+  'MENUITEMCHECKBOX',
+  'MENUITEMRADIO',
+  'RADIO',
+  'TEXTBOX',
+  'SEARCHBOX'
+]
 
 function isRelevantElement(element: HTMLElement, parentContext: CollectorContext, context: CollectorContext): boolean {
   if (RELEVANT_TAG_NAMES.includes(element.tagName.toUpperCase())) {
+    return computeArea(element) >= 20
+  }
+  const role = element.role ?? element.getAttribute('role')
+  if (role && RELEVANT_ROLES.includes(role.toUpperCase())) {
     return computeArea(element) >= 20
   }
   if (context.isContentEditable && parentContext.isContentEditable != context.isContentEditable) {
