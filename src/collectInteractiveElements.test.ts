@@ -142,6 +142,26 @@ describe('gatherInteractiveElements', () => {
     const result = gatherInteractiveElements()
     expect(result).toEqual([element])
   })
+
+  it('collects elements inside a iFrame', () => {
+    const iframe = document.createElement('iframe')
+    iframe.id = 'iFrame'
+    document.body.appendChild(iframe)
+
+    const doc = iframe.contentDocument!
+    doc.open()
+    doc.write(`
+    <!DOCTYPE html>
+    <html lang="en">
+      <body>
+        <button id="button">Click me</button>
+      </body>
+    </html>`)
+    doc.close()
+    const element = spyHtmlElementById('button', { width: 200, height: 20 }, 'iFrame')
+    const result = gatherInteractiveElements()
+    expect(result).toEqual([element])
+  })
 })
 
 function createRectList(size: { width: number; height: number }) {
@@ -162,8 +182,11 @@ function createRectList(size: { width: number; height: number }) {
   return rects as DOMRectList
 }
 
-function spyHtmlElementById(id: string, size: { width: number; height: number }): HTMLElement {
-  const element = document.getElementById(id)!
+function spyHtmlElementById(id: string, size: { width: number; height: number }, frameId?: string): HTMLElement {
+  let relevantDocument = document
+  // eslint-disable-next-line
+  if (frameId) relevantDocument = (document.getElementById(frameId) as HTMLIFrameElement).contentWindow?.document!
+  const element = relevantDocument.getElementById(id)!
   jest.spyOn(element, 'getClientRects').mockReturnValue(createRectList(size))
   jest.spyOn(document, 'elementFromPoint').mockReturnValue(element)
   return element
