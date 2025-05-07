@@ -13,7 +13,7 @@ type CollectorContext = {
 }
 
 const IRRELEVANT_CURSOR_VALUES = ['auto', 'default', 'none', 'not-allowed', 'inherit', 'initial']
-const RELEVANT_TAG_NAMES = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'VIDEO']
+const RELEVANT_TAG_NAMES = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'IFRAME', 'VIDEO']
 const RELEVANT_ROLES = [
   'OPTION',
   'BUTTON',
@@ -49,8 +49,8 @@ function collectInteractiveElements(elt: HTMLElement, collector: HTMLElement[], 
     isContentEditable: elt.isContentEditable
   }
   if (isRelevantElement(elt, parentContext, context)) collector.push(elt)
-  for (const child of gatherChildren(elt)) {
-    if (!isHTMLElement(child)) continue
+  for (const child of elt.children) {
+    if (!(child instanceof HTMLElement)) continue
     collectInteractiveElements(child, collector, context)
   }
 }
@@ -81,17 +81,4 @@ function computeArea(element: HTMLElement): number {
     })
 
   return rects.reduce((acc, rect) => acc + rect.width * rect.height, 0)
-}
-
-function gatherChildren(element: HTMLElement) {
-  if (element instanceof HTMLIFrameElement) {
-    const document = element.contentWindow?.document
-    return document ? document.body.children : []
-  }
-  return element.children
-}
-
-const isHTMLElement = (el: unknown): el is HTMLElement => {
-  // @ts-expect-error not fancy to be more precise
-  return el instanceof (el?.ownerDocument?.defaultView?.HTMLElement ?? HTMLElement)
 }
