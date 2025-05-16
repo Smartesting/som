@@ -13,7 +13,7 @@ type CollectorContext = {
 }
 
 const IRRELEVANT_CURSOR_VALUES = ['auto', 'default', 'none', 'not-allowed', 'inherit', 'initial']
-const RELEVANT_TAG_NAMES = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'IFRAME', 'VIDEO']
+const RELEVANT_TAG_NAMES = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'VIDEO']
 const RELEVANT_ROLES = [
   'OPTION',
   'BUTTON',
@@ -49,10 +49,7 @@ function collectInteractiveElements(elt: HTMLElement, collector: HTMLElement[], 
     isContentEditable: elt.isContentEditable
   }
   if (isRelevantElement(elt, parentContext, context)) collector.push(elt)
-  for (const child of elt.children) {
-    if (!(child instanceof HTMLElement)) continue
-    collectInteractiveElements(child, collector, context)
-  }
+  gatherHTMLChildren(elt).forEach((child) => collectInteractiveElements(child, collector, context))
 }
 
 function computeArea(element: HTMLElement): number {
@@ -81,4 +78,8 @@ function computeArea(element: HTMLElement): number {
     })
 
   return rects.reduce((acc, rect) => acc + rect.width * rect.height, 0)
+}
+
+function gatherHTMLChildren(element: HTMLElement): ReadonlyArray<HTMLElement> {
+  return Array.from(element.childNodes).filter((e) => e instanceof HTMLElement)
 }
