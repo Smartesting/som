@@ -1,7 +1,7 @@
 import { Mark } from './types'
 import { gatherInteractiveElements } from './collectInteractiveElements'
 import { highlightMarks } from './highlightMarks'
-import { elementsToMarks } from './marks'
+import { elementsToCurrentMarks, elementsToMarks } from './marks'
 
 let labels: HTMLDivElement[] = []
 
@@ -25,7 +25,15 @@ function markPage(highlightElements: boolean): Mark[] {
   return marks
 }
 
-if (!window.markPage) window.markPage = markPage
+function collectMarks(): Mark[] {
+  const interactiveElements = document.querySelectorAll(`[${MARK_INDEX_ATTRIBUTE}]`)
+  return elementsToCurrentMarks(Array.from(interactiveElements).filter((element) => element instanceof HTMLElement))
+}
+
+if (!window.markPage) {
+  window.markPage = markPage
+  window.collectMarks = collectMarks
+}
 
 export * from './types'
 export * from './global'

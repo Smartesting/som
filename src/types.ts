@@ -28,3 +28,5 @@ export type Mark = BoundedMark & {
 }
 
 export type MarkPageFn = (highlightElements: boolean) => Mark[]
+
+export type CollectMarksFn = () => Mark[]

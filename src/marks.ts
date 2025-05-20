@@ -3,18 +3,31 @@ import { MARK_INDEX_ATTRIBUTE } from './index'
 import { buildRenderConfig } from './renderConfig'
 
 export function elementsToMarks(htmlElements: ReadonlyArray<HTMLElement>): Mark[] {
-  return buildMarks(buildBoundedMarks(htmlElements))
+  return buildMarks(
+    htmlElements.map(function (item, index) {
+      item.setAttribute(MARK_INDEX_ATTRIBUTE, `${index}`)
+      return buildBoundedMark(item, index)
+    })
+  )
 }
 
-function buildBoundedMarks(htmlElements: ReadonlyArray<HTMLElement>): BoundedMark[] {
-  return htmlElements.map(function (item, index) {
-    item.setAttribute(MARK_INDEX_ATTRIBUTE, `${index}`)
-    return {
-      id: index,
-      htmlElement: item,
-      bounds: mapDomRectToBoundingBox(item.getBoundingClientRect())
-    }
-  })
+export function elementsToCurrentMarks(htmlElements: ReadonlyArray<HTMLElement>): Mark[] {
+  return buildMarks(
+    htmlElements.flatMap(function (item) {
+      const indexAttribute = item.getAttribute(MARK_INDEX_ATTRIBUTE)
+      const label = parseInt(indexAttribute ?? '')
+      if (isNaN(label)) return []
+      return [buildBoundedMark(item, label)]
+    })
+  )
+}
+
+function buildBoundedMark(htmlElement: HTMLElement, index: number): BoundedMark {
+  return {
+    id: index,
+    htmlElement: htmlElement,
+    bounds: mapDomRectToBoundingBox(htmlElement.getBoundingClientRect())
+  }
 }
 
 function buildAllPositionsCandidates(
